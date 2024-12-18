@@ -12,7 +12,6 @@ func FileInfo(dir DIR, file File) DIR {
 
 	Info, err := os.Stat(file.Path + "/" + file.Name)
 	if err != nil {
-		//fmt.Println(file.Path + "/" + file.Name)
 		file.Err = err
 		return dir
 	}
@@ -22,7 +21,7 @@ func FileInfo(dir DIR, file File) DIR {
 	file.Mode = Info.Mode().String()
 	file.Size = strconv.FormatInt(Info.Size(), 10)
 	if len(file.Size) > dir.PInfo.MaxSize {
-		dir.PInfo.MaxSize = len(file.Name)
+		dir.PInfo.MaxSize = len(file.Size)
 	}
 	stat, ok := Info.Sys().(*syscall.Stat_t)
 	if !ok {
@@ -45,8 +44,8 @@ func FileInfo(dir DIR, file File) DIR {
 		return dir
 	}
 	file.UserName = usr.Username
-	if len(file.UserName) < dir.PInfo.MaxUName {
-		dir.PInfo.MaxSize = len(file.Name)
+	if len(file.UserName) > dir.PInfo.MaxUName {
+		dir.PInfo.MaxUName = len(file.UserName)
 	}
 
 	grp, err := user.LookupGroupId(gid)
@@ -55,8 +54,8 @@ func FileInfo(dir DIR, file File) DIR {
 		return dir
 	}
 	file.GroupName = grp.Name
-	if len(file.GroupName) < dir.PInfo.MaxGrName {
-		dir.PInfo.MaxSize = len(file.Name)
+	if len(file.GroupName) > dir.PInfo.MaxGrName {
+		dir.PInfo.MaxGrName = len(file.GroupName)
 	}
 	file.Hlink = strconv.Itoa(int(stat.Nlink))
 	if dir.PInfo.MaxHlink < len(file.Hlink) {

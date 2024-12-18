@@ -2,19 +2,24 @@ package funcs
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
+	"time"
 )
 
 func Print(result []DIR) {
 	if len(result) == 0 {
 		return
 	}
-	for i := 0; i < len(result); i++ {
-		Print(result[i].SubDir)
-		fmt.Println("")
-		fmt.Println(result[i].ParentDir + "/" + result[i].Name + ":")
-		fmt.Println("total:", result[i].Total)
+	lenght := len(result)
+	for i := 0; i < lenght; i++ {
 
+		if lenght > 1 || Flag_R {
+			fmt.Println("")
+		}
+
+		fmt.Println(result[i].Path + ":")
+		fmt.Println("total:", result[i].Total)
 		if result[i].Err != nil {
 			fmt.Println("err:=", result[i].Err)
 		}
@@ -22,13 +27,16 @@ func Print(result []DIR) {
 		for j := 0; j < len(result[i].Files); j++ {
 			if result[i].Files[j].Err != nil {
 				fmt.Println("err               :", result[i].Files[j].Err)
+				continue
 			}
 			fmt.Println(LFormat(result[i].Files[j], result[i].PInfo))
 		}
+		Print(result[i].SubDir)
 	}
 }
 func LFormat(file File, prtInfo PrintInfo) string {
-	arr := []string{file.Mode, padStart(file.Hlink, prtInfo.MaxHlink, " "), padStart(file.GroupName, prtInfo.MaxGrName, " "), padStart(file.UserName, prtInfo.MaxUName, " "), padStart(file.Size, prtInfo.MaxSize, " "), file.Name}
+	var time string = timeFormat(file.Time)
+	arr := []string{file.Mode, padStart(file.Hlink, prtInfo.MaxHlink, " "), padStart(file.GroupName, prtInfo.MaxGrName, " "), padStart(file.UserName, prtInfo.MaxUName, " "), padStart(file.Size, prtInfo.MaxSize, " "), time, file.Name}
 	return strings.Join(arr, " ")
 
 }
@@ -39,8 +47,15 @@ func padStart(input string, targetLength int, padChar string) string {
 	for len(input) < targetLength {
 		input = padChar + input
 	}
-
 	return input
+}
+func timeFormat(t time.Time) string {
+	Month := t.Month().String()[:3]
+	Day := strconv.Itoa(t.Day())
+	hour := strconv.Itoa(t.Hour())
+	min := strconv.Itoa(t.Minute())
+
+	return Month[:3] + " " + padStart(Day, 2, " ") + " " + padStart(hour, 2, "0") + ":" + padStart(min, 2, "0")
 }
 
 // func resevre() {
