@@ -15,6 +15,7 @@ func FitchDir(dir DIR) DIR {
 	}
 
 	for _, file := range files {
+		//fmt.Println("aa", file.Name())
 		if file.IsDir() && Flag_R {
 			var subDir DIR
 			subDir.Path = dir.Path + "/" + file.Name()
@@ -26,26 +27,21 @@ func FitchDir(dir DIR) DIR {
 			var File File
 			File.Name = file.Name()
 			File.Path = dir.Path
-			File, total := FileInfo(File)
-			dir.Total += total
-			dir.Files = append(dir.Files, File)
+			dir = FileInfo(dir, File)
+
 		}
 	}
-	// if Flag_a {
-	// 	var File File
+	if Flag_a {
+		var file File
 
-	// 	File.Path = dir.Path
-	// 	File, total := FileInfo(File)
-	// 	dir.Total += total
-	// 	dir.Files = append(dir.Files, File)
-	// }
-	// if Flag_a {
-	// 	var File File
-	// 	File.Name = dir.ParentDir
-	// 	File, total := FileInfo(File)
-	// 	dir.Total += total
-	// 	dir.Files = append(dir.Files, File)
-	// }
+		file.Path = dir.Path
+		dir = FileInfo(dir, file)
+
+		file = File{}
+		file.Name = dir.ParentDir
+		dir = FileInfo(dir, file)
+
+	}
 	dir.Total /= 2
 
 	return dir

@@ -8,28 +8,30 @@ import (
 	"syscall"
 )
 
-func FileInfo(file File) (File, int) {
+func FileInfo(dir DIR, file File) DIR {
 
-	var total int
 	Info, err := os.Stat(file.Path + "/" + file.Name)
 	if err != nil {
 		//fmt.Println(file.Path + "/" + file.Name)
 		file.Err = err
-		return file, total
+		return dir
 	}
 	file.Name = Info.Name()
+
 	file.Time = Info.ModTime()
 	file.Mode = Info.Mode().String()
 	file.Size = strconv.FormatInt(Info.Size(), 10)
-
+	if len(file.Size) > dir.PInfo.MaxSize {
+		dir.PInfo.MaxSize = len(file.Name)
+	}
 	stat, ok := Info.Sys().(*syscall.Stat_t)
 	if !ok {
 		file.Err = fmt.Errorf("failed to get syscall.Stat_t for file: %s", file.Name)
-		return file, total
+		return dir
 	}
 
 	if Flag_a || (!Flag_a && file.Name[0] != '.') {
-		total = total + int(stat.Blocks)
+		dir.Total += int(stat.Blocks)
 
 	}
 
@@ -40,17 +42,26 @@ func FileInfo(file File) (File, int) {
 	usr, err := user.LookupId(uid)
 	if err != nil {
 		file.Err = fmt.Errorf("failed to lookup user id: %s", uid)
-		return file, total
+		return dir
 	}
 	file.UserName = usr.Username
+	if len(file.UserName) < dir.PInfo.MaxUName {
+		dir.PInfo.MaxSize = len(file.Name)
+	}
 
 	grp, err := user.LookupGroupId(gid)
 	if err != nil {
 		file.Err = fmt.Errorf("failed to lookup group id: %s", gid)
-		return file, total
+		return dir
 	}
 	file.GroupName = grp.Name
-	file.Hlink = int(stat.Nlink)
-
-	return file, total
+	if len(file.GroupName) < dir.PInfo.MaxGrName {
+		dir.PInfo.MaxSize = len(file.Name)
+	}
+	file.Hlink = strconv.Itoa(int(stat.Nlink))
+	if dir.PInfo.MaxHlink < len(file.Hlink) {
+		dir.PInfo.MaxHlink = len(file.Hlink)
+	}
+	dir.Files = append(dir.Files, file)
+	return dir
 }

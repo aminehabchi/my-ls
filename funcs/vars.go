@@ -11,7 +11,7 @@ var (
 )
 
 type DIR struct {
-	Name   string
+	Name      string
 	Path      string
 	ParentDir string
 	Total     int
@@ -29,7 +29,7 @@ type File struct {
 	UserName  string
 	GroupName string
 	Size      string
-	Hlink     int
+	Hlink     string
 	Err       error
 }
 
@@ -37,4 +37,5 @@ type PrintInfo struct {
 	MaxSize   int
 	MaxGrName int
 	MaxUName  int
+	MaxHlink  int
 }
