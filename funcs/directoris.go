@@ -1,6 +1,7 @@
 package funcs
 
 import (
+	"fmt"
 	"math"
 	"os"
 )
@@ -13,6 +14,7 @@ func FitchDir(dir DIR) DIR {
 	}
 
 	for _, file := range files {
+		fmt.Println(file.Name())
 		if file.IsDir() && Flag_R {
 			var subDir DIR
 			subDir.DirName = file.Name()
@@ -24,6 +26,15 @@ func FitchDir(dir DIR) DIR {
 			dir.Total += (int(math.Ceil(float64(total) / blockSize)))
 			dir.Files = append(dir.Files, File)
 		}
+	}
+	if Flag_a  {
+		File, total := FileInfo(dir.DirName)
+		dir.Total += (int(math.Ceil(float64(total) / blockSize)))
+		dir.Files = append(dir.Files, File)
+
+		File, total = FileInfo("."+dir.DirName)
+		dir.Total += (int(math.Ceil(float64(total) / blockSize)))
+		dir.Files = append(dir.Files, File)
 	}
 
 	return dir

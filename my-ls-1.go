@@ -51,7 +51,7 @@ func main() {
 	}
 	fmt.Println(result[0].Total)
 	
-}
+	}
 
 func CheckFlagIsValid(flag string) bool {
 	l := len(flag)
