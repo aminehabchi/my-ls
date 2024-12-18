@@ -8,23 +8,29 @@ import (
 	"syscall"
 )
 
-func FileInfo(fileName string) (File, int) {
-	var file File
+func FileInfo(file File) (File, int) {
+
 	var total int
-	fileInfo, err := os.Stat(fileName)
+	Info, err := os.Stat(file.Path + "/" + file.Name)
 	if err != nil {
+		//fmt.Println(file.Path + "/" + file.Name)
 		file.Err = err
 		return file, total
 	}
-	file.Name = fileInfo.Name()
-	file.Time = fileInfo.ModTime()
-	file.Mode = fileInfo.Mode().String()
-	file.Size = strconv.FormatInt(fileInfo.Size(), 10)
-	total += int(fileInfo.Size())
-	stat, ok := fileInfo.Sys().(*syscall.Stat_t)
+	file.Name = Info.Name()
+	file.Time = Info.ModTime()
+	file.Mode = Info.Mode().String()
+	file.Size = strconv.FormatInt(Info.Size(), 10)
+
+	stat, ok := Info.Sys().(*syscall.Stat_t)
 	if !ok {
 		file.Err = fmt.Errorf("failed to get syscall.Stat_t for file: %s", file.Name)
 		return file, total
+	}
+
+	if Flag_a || (!Flag_a && file.Name[0] != '.') {
+		total = total + int(stat.Blocks)
+
 	}
 
 	// Get user and group names

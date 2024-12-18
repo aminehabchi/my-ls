@@ -10,19 +10,20 @@ var (
 	Flag_t bool
 )
 
-const blockSize = 512
-
 type DIR struct {
-	Err     error
-	DirName string
-	Total   int
-	PInfo   PrintInfo
-	SubDir  []DIR
-	Files   []File
+	Name   string
+	Path      string
+	ParentDir string
+	Total     int
+	PInfo     PrintInfo
+	SubDir    []DIR
+	Files     []File
+	Err       error
 }
 
 type File struct {
 	Name      string
+	Path      string
 	Time      time.Time
 	Mode      string
 	UserName  string

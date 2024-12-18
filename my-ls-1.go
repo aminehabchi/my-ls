@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"funcs/funcs"
 	"os"
 	"strings"
@@ -31,27 +30,21 @@ func main() {
 				funcs.Flag_t = true
 			}
 		} else if lsArgs[i][0] != '-' {
-			dir := funcs.DIR{DirName: lsArgs[i]}
+			dir := funcs.DIR{Name: lsArgs[i], Path: lsArgs[i]}
 			result = append(result, dir)
 		}
 	}
 	if len(result) == 0 {
-		dir := funcs.DIR{DirName: "."}
+		dir := funcs.DIR{Name: ".", Path: ".",ParentDir :".."}
 		result = append(result, dir)
 	}
 
 	for i := 0; i < len(result); i++ {
-
 		result[i] = funcs.FitchDir(result[i])
 	}
-	for i:=0;i<len(result);i++{
-		for j:=0;j<len(result[i].Files);j++{
-			fmt.Println(result[i].Files[j])
-		}
-	}
-	fmt.Println(result[0].Total)
-	
-	}
+
+	funcs.Print(result)
+}
 
 func CheckFlagIsValid(flag string) bool {
 	l := len(flag)
