@@ -38,7 +38,9 @@ func main() {
 		dir := funcs.DIR{Name: ".", Path: ".",ParentDir :".."}
 		result = append(result, dir)
 	}
-
+	if len(result)>1{
+		funcs.IsMoreThenOne=true
+	}
 	for i := 0; i < len(result); i++ {
 		result[i] = funcs.FitchDir(result[i])
 	}

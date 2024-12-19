@@ -30,6 +30,7 @@ type File struct {
 	GroupName string
 	Size      string
 	Hlink     string
+	IsDir     bool
 	Err       error
 }
 

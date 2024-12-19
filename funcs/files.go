@@ -16,7 +16,7 @@ func FileInfo(dir DIR, file File) DIR {
 		return dir
 	}
 	file.Name = Info.Name()
-
+	file.IsDir = true
 	file.Time = Info.ModTime()
 	file.Mode = Info.Mode().String()
 	file.Size = strconv.FormatInt(Info.Size(), 10)
@@ -29,10 +29,7 @@ func FileInfo(dir DIR, file File) DIR {
 		return dir
 	}
 
-	if Flag_a || (!Flag_a && file.Name[0] != '.') {
-		dir.Total += int(stat.Blocks)
-
-	}
+	dir.Total += int(stat.Blocks)
 
 	// Get user and group names
 	uid := strconv.Itoa(int(stat.Uid))

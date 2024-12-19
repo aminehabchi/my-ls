@@ -14,24 +14,26 @@ func FitchDir(dir DIR) DIR {
 		var file File
 
 		file.Path = dir.Path
+		file.IsDir = true
 		file.Name = "."
 		dir = FileInfo(dir, file)
 
 		file = File{}
 		file.Path = dir.Path
+		file.IsDir = true
 		file.Name = ".."
 		dir = FileInfo(dir, file)
-
 	}
+
 	for _, file := range files {
 		if file.Name()[0] != '.' || (file.Name()[0] != '.' || Flag_a) {
 			var File File
 			File.Name = file.Name()
 			File.Path = dir.Path
 			dir = FileInfo(dir, File)
-			
 		}
-		if file.IsDir() && Flag_R {
+		if (file.IsDir() && Flag_R) && ((!Flag_a && file.Name()[0] != '.') || Flag_a) {
+			IsMoreThenOne = true
 			var subDir DIR
 			subDir.Path = dir.Path + "/" + file.Name()
 			subDir.Name = file.Name()

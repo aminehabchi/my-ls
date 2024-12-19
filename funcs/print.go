@@ -7,34 +7,51 @@ import (
 	"time"
 )
 
+var IsMoreThenOne bool = false
+
 func Print(result []DIR) {
 	if len(result) == 0 {
 		return
 	}
 	lenght := len(result)
 	for i := 0; i < lenght; i++ {
-
-		if lenght > 1 || Flag_R {
-			fmt.Println("")
+		if IsMoreThenOne {
+			fmt.Println(result[i].Path + ":")
+		}
+		if Flag_l {
+			fmt.Println("total:", result[i].Total)
 		}
 
-		fmt.Println(result[i].Path + ":")
-		fmt.Println("total:", result[i].Total)
 		if result[i].Err != nil {
-			fmt.Println("err:=", result[i].Err)
+			fmt.Println("err Dir:", result[i].Err)
+			continue
 		}
 
 		for j := 0; j < len(result[i].Files); j++ {
 			if result[i].Files[j].Err != nil {
-				fmt.Println("err               :", result[i].Files[j].Err)
+				fmt.Println("err  File:", result[i].Files[j].Err)
 				continue
 			}
-			fmt.Println(LFormat(result[i].Files[j], result[i].PInfo))
+			
+			fmt.Print(LFormat(result[i].Files[j], result[i].PInfo))
+			
+			if j == len(result[i].Files)-1 || Flag_l {
+				fmt.Println()
+			}
+			if !Flag_l {
+				fmt.Print(" ")
+			}
+		}
+		if IsMoreThenOne {
+			fmt.Println()
 		}
 		Print(result[i].SubDir)
 	}
 }
 func LFormat(file File, prtInfo PrintInfo) string {
+	if !Flag_l {
+		return file.Name
+	}
 	var time string = timeFormat(file.Time)
 	arr := []string{file.Mode, padStart(file.Hlink, prtInfo.MaxHlink, " "), padStart(file.GroupName, prtInfo.MaxGrName, " "), padStart(file.UserName, prtInfo.MaxUName, " "), padStart(file.Size, prtInfo.MaxSize, " "), time, file.Name}
 	return strings.Join(arr, " ")
@@ -57,6 +74,32 @@ func timeFormat(t time.Time) string {
 
 	return Month[:3] + " " + padStart(Day, 2, " ") + " " + padStart(hour, 2, "0") + ":" + padStart(min, 2, "0")
 }
+
+// func PrintWithColor(text, color string) string {
+// 	var colorCode string
+// 	switch color {
+// 	case "red":
+// 		colorCode = "\033[31m"
+// 	case "green":
+// 		colorCode = "\033[32m"
+// 	case "yellow":
+// 		colorCode = "\033[33m"
+// 	case "blue":
+// 		colorCode = "\033[34m"
+// 	case "magenta":
+// 		colorCode = "\033[35m"
+// 	case "cyan":
+// 		colorCode = "\033[36m"
+// 	case "white":
+// 		colorCode = "\033[37m"
+// 	case "reset":
+// 		colorCode = "\033[0m"
+// 	default:
+// 		colorCode = "\033[0m"
+// 	}
+
+// 	return colorCode + text + "\033[0m"
+// }
 
 // func resevre() {
 // 	for i := 0; i < len(result); i++ {
