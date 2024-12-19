@@ -9,7 +9,7 @@ import (
 
 var IsMoreThenOne bool = false
 
-func Print(result []DIR) {
+func PrintDir(result []DIR) {
 	if len(result) == 0 {
 		return
 	}
@@ -26,28 +26,36 @@ func Print(result []DIR) {
 			fmt.Println("err Dir:", result[i].Err)
 			continue
 		}
+		PrintFile(result[i].Files, result[i].PInfo)
 
-		for j := 0; j < len(result[i].Files); j++ {
-			if result[i].Files[j].Err != nil {
-				fmt.Println("err  File:", result[i].Files[j].Err)
-				continue
-			}
-			
-			fmt.Print(LFormat(result[i].Files[j], result[i].PInfo))
-			
-			if j == len(result[i].Files)-1 || Flag_l {
-				fmt.Println()
-			}
-			if !Flag_l {
-				fmt.Print(" ")
-			}
-		}
-		if IsMoreThenOne {
-			fmt.Println()
-		}
-		Print(result[i].SubDir)
+		PrintDir(result[i].SubDir)
 	}
 }
+
+func PrintFile(Files []File, PInfo PrintInfo) {
+	if Flag_r {
+		Files = Resevre(Files)
+	}
+	for j := 0; j < len(Files); j++ {
+		if Files[j].Err != nil {
+			fmt.Println("err  File:", Files[j].Err)
+			continue
+		}
+
+		fmt.Print(LFormat(Files[j], PInfo))
+
+		if j == len(Files)-1 || Flag_l {
+			fmt.Println()
+		}
+		if !Flag_l {
+			fmt.Print(" ")
+		}
+	}
+	if IsMoreThenOne {
+		fmt.Println()
+	}
+}
+
 func LFormat(file File, prtInfo PrintInfo) string {
 	if !Flag_l {
 		return file.Name
@@ -99,15 +107,6 @@ func timeFormat(t time.Time) string {
 // 	}
 
 // 	return colorCode + text + "\033[0m"
-// }
-
-// func resevre() {
-// 	for i := 0; i < len(result); i++ {
-// 		length := len(result[i].Files)
-// 		for j := 0; j < length/2; j++ {
-// 			result[i].Files[j], result[i].Files[length-1-j] = result[i].Files[length-1-j], result[i].Files[j]
-// 		}
-// 	}
 // }
 
 // if Flag_t {

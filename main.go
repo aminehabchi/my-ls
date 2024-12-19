@@ -35,17 +35,17 @@ func main() {
 		}
 	}
 	if len(result) == 0 {
-		dir := funcs.DIR{Name: ".", Path: ".",ParentDir :".."}
+		dir := funcs.DIR{Name: ".", Path: ".", ParentDir: ".."}
 		result = append(result, dir)
 	}
-	if len(result)>1{
-		funcs.IsMoreThenOne=true
+	if len(result) > 1 {
+		funcs.IsMoreThenOne = true
 	}
 	for i := 0; i < len(result); i++ {
 		result[i] = funcs.FitchDir(result[i])
 	}
 
-	funcs.Print(result)
+	funcs.PrintDir(result)
 }
 
 func CheckFlagIsValid(flag string) bool {
